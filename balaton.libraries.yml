@@ -1,5 +1,8 @@
 base:
   version: VERSION
+  css:
+    theme:
+      css/main.css: {}
   js:
     js/dylay.js: {}
     js/global.js: {}

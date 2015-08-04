@@ -1,0 +1,10 @@
+#filters {
+  position: relative;
+  top: -40px;
+}
+
+#filters a {
+  display: inline-block;
+  margin-right: 10px;
+  cursor: pointer;
+}

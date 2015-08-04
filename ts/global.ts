@@ -5,27 +5,75 @@
 module Drupal8filter {
     export class Filter {
         $elements:any;
+        $dylay: any;
+        availableCounts: number[] = [0];
 
         constructor(elements: any) {
-            $elements: elements;
-            this.initFilter('.view-frontpage');
+            this.$elements = $(elements);
+            this.countWordsInTitle();
+            this.createFilterList();
+            this.initFilter();
         }
 
+        public initFilter(): void {
+            var _me = this;
 
-        public initFilter(elements: any): void {
             // init
-            $(elements).dylay({
+            this.$dylay = this.$elements.dylay({
                 // selector to define elements
                 selector: '.views-row'
             });
 
+            // controls
+            this.$elements.find('#filters a').on('click', function () {
+                _me.$elements.dylay('filter', $(this).data('filter'));
+                return false;
+            })
+        }
+
+        /*
+        Create a list of filter options.
+         */
+        private createFilterList(): void {
+            var filterButtons : any;
+
+            // The wrapper element.
+            filterButtons = $('<div id="filters"></div>');
+
+            this.availableCounts.forEach(function(entry) {
+                // The links.
+                // Show all item, if entry is 0.
+                if (entry == 0) {
+                    filterButtons.append($('<a/>').data('filter', '*').text('all'));
+                } else {
+                    filterButtons.append($('<a/>').data('filter', '.count-' + entry).text(entry + 'word(s)'));
+                }
+            });
+
+            // Prepend all to the $elements.
+            this.$elements.prepend(filterButtons);
+        }
+
+        /*
+        Count words in title, and save the result.
+         */
+        private countWordsInTitle(): void {
+            var wordsLength: number;
+            var _me = this;
+
+            this.$elements.find('.views-row').each(function() {
+                // Calculate all items length and add class based on length.
+                wordsLength = $(this).find('.field-node--title').text().split(' ').length;
+                $(this).addClass('count-' + wordsLength);
+
+                // Save the result if not exist.
+                if (_me.availableCounts.indexOf(wordsLength) == -1) {
+                    _me.availableCounts.push(wordsLength);
+                }
+            });
         }
     }
 }
 
-var greeter = new Drupal8filter.Filter(".view-frontpage");
+var myfilter = new Drupal8filter.Filter(".view-frontpage");
 
-
-$(document).ready(function () {
-    $(".views-row")[0].innerHTML = 'egy';
-});
