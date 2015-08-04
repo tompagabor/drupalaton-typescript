@@ -1,6 +1,7 @@
 base:
   version: VERSION
   js:
+    js/dylay.js: {}
     js/global.js: {}
   dependencies:
     - core/jquery
