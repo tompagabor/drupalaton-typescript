@@ -1,0 +1,4 @@
+base:
+  version: VERSION
+  js:
+    js/global.js: {}

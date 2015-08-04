@@ -1,0 +1,9 @@
+name: Balaton
+type: theme
+base theme: bartik
+description: 'Typescript workshop @ Drupalaton'
+package: Drupalaton
+version: 8.x-1.0
+core: 8.x
+libraries:
+  - balaton/base
