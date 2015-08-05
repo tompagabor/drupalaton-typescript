@@ -1,46 +1,46 @@
 ///<reference path='../typings/jquery/jquery.d.ts' />
 ///<reference path='../typings/dylay/dylay.d.ts' />
 
-
 module Drupal8filter {
     export class Filter {
         $elements:any;
-        $dylay: any;
-        availableCounts: number[] = [0];
+        $dylay:any;
+        availableCounts:number[] = [0];
 
-        constructor(elements: any) {
+        constructor(elements:any) {
             this.$elements = $(elements);
             this.countWordsInTitle();
             this.createFilterList();
             this.initFilter();
         }
 
-        public initFilter(): void {
+        public initFilter():void {
             var _me = this;
 
-            // init
+            // Init DyLay library.
             this.$dylay = this.$elements.dylay({
                 // selector to define elements
                 selector: '.views-row'
             });
 
-            // controls
-            this.$elements.find('#filters a').on('click', function () {
+            // Init controls.
+            this.$elements.find('#filters a').on('click', function (e) {
+                e.preventDefault();
+
                 _me.$elements.dylay('filter', $(this).data('filter'));
-                return false;
             })
         }
 
         /*
-        Create a list of filter options.
+         Create a list of filter options.
          */
-        private createFilterList(): void {
-            var filterButtons : any;
+        private createFilterList():void {
+            var filterButtons:any;
 
             // The wrapper element.
             filterButtons = $('<div id="filters"></div>');
 
-            this.availableCounts.forEach(function(entry) {
+            this.availableCounts.forEach(function (entry) {
                 // The links.
                 // Show all item, if entry is 0.
                 if (entry == 0) {
@@ -55,13 +55,13 @@ module Drupal8filter {
         }
 
         /*
-        Count words in title, and save the result.
+         Count words in title, and save the result.
          */
-        private countWordsInTitle(): void {
-            var wordsLength: number;
+        private countWordsInTitle():void {
+            var wordsLength:number;
             var _me = this;
 
-            this.$elements.find('.views-row').each(function() {
+            this.$elements.find('.views-row').each(function () {
                 // Calculate all items length and add class based on length.
                 wordsLength = $(this).find('.field-node--title').text().split(' ').length;
                 $(this).addClass('count-' + wordsLength);
@@ -75,5 +75,5 @@ module Drupal8filter {
     }
 }
 
-var myfilter = new Drupal8filter.Filter(".view-frontpage");
 
+var myfilter = new Drupal8filter.Filter(".view-frontpage");
