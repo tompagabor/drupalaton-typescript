@@ -11,7 +11,7 @@ module Drupal8filter {
         availableCounts:number[] = [];
 
         constructor(elements:string, nodeSelector:string) {
-            this.$elements = $(elements);
+            this.$elements = jQuery(elements);
             this.availableCounts.push(0);
             this.countWordsInTitle();
             this.createFilterList();
@@ -32,7 +32,7 @@ module Drupal8filter {
             // Init controls.
             this.$elements.find('#filters a').on('click', (event) => {
                 event.preventDefault();
-                this.$elements.dylay('filter', $(event.currentTarget).data('filter'));
+                this.$elements.dylay('filter', jQuery(event.currentTarget).data('filter'));
             })
         }
 
@@ -43,15 +43,15 @@ module Drupal8filter {
             var filterButtons:any;
 
             // The wrapper element.
-            filterButtons = $('<div id="filters"></div>');
+            filterButtons = jQuery('<div id="filters"></div>');
 
             this.availableCounts.forEach(function (entry) {
                 // The links.
                 // Show all item, if entry is 0.
                 if (entry == 0) {
-                    filterButtons.append($('<a/>').data('filter', '*').text('all'));
+                    filterButtons.append(jQuery('<a/>').data('filter', '*').text('all'));
                 } else {
-                    filterButtons.append($('<a/>').data('filter', '.count-' + entry).text(entry + 'word(s)'));
+                    filterButtons.append(jQuery('<a/>').data('filter', '.count-' + entry).text(entry + 'word(s)'));
                 }
             });
 
@@ -68,8 +68,8 @@ module Drupal8filter {
 
             this.$elements.find('.views-row').each(function () {
                 // Calculate all items length and add class based on length.
-                wordsLength = $(this).find('.field-node--title').text().split(' ').length;
-                $(this).addClass('count-' + wordsLength);
+                wordsLength = jQuery(this).find('.field-node--title').text().split(' ').length;
+                jQuery(this).addClass('count-' + wordsLength);
 
                 // Save the result if not exist.
                 if (_me.availableCounts.indexOf(wordsLength) == -1) {
