@@ -1,18 +1,11 @@
-interface DyLaySettings {
-    opts? : any;
-    $element? : any;
-}
+interface DyLay {
+    ( opts? : any,
+      $element? : any
+    ): JQuery;
 
-interface DyLayStatic {
     position(): void;
     filter(settings:any): void;
     sort(by?:string, any?:string): void;
-
-    settings: DyLaySettings;
-}
-
-interface DyLay {
-    (settings: DyLaySettings): JQuery;
 }
 
 interface JQuery {
