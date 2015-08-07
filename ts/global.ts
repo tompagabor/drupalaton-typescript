@@ -3,31 +3,36 @@
 
 module Drupal8filter {
     export class Filter {
+        // The elements wrapper, what we want to filter.
         $elements:any;
+        // The dyLay Library.
         $dylay:any;
-        availableCounts:number[] = [0];
+        // Count the avaiable filter options.
+        availableCounts:number[] = [];
 
-        constructor(elements:any) {
+        constructor(elements:string, nodeSelector:string) {
             this.$elements = $(elements);
+            this.availableCounts.push(0);
             this.countWordsInTitle();
             this.createFilterList();
-            this.initFilter();
+            this.initFilter(nodeSelector);
         }
 
-        public initFilter():void {
-            var _me = this;
+        /*
+         Start the filter code.
+         */
+        private initFilter(nodeSelector: string):void {
 
             // Init DyLay library.
             this.$dylay = this.$elements.dylay({
                 // selector to define elements
-                selector: '.views-row'
+                selector: nodeSelector
             });
 
             // Init controls.
-            this.$elements.find('#filters a').on('click', function (e) {
-                e.preventDefault();
-
-                _me.$elements.dylay('filter', $(this).data('filter'));
+            this.$elements.find('#filters a').on('click', (event) => {
+                event.preventDefault();
+                this.$elements.dylay('filter', $(event.currentTarget).data('filter'));
             })
         }
 
@@ -75,5 +80,5 @@ module Drupal8filter {
     }
 }
 
-
-var myfilter = new Drupal8filter.Filter(".view-frontpage");
+// Start our app.
+var myfilter = new Drupal8filter.Filter(".view-frontpage", ".views-row");

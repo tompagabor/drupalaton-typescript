@@ -8,3 +8,7 @@
   margin-right: 10px;
   cursor: pointer;
 }
+
+.view-id-frontpage .views-row {
+  padding: 0 20px 20px 0;
+}
