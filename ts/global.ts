@@ -11,11 +11,11 @@ module Drupal8filter {
         availableCounts:number[] = [];
 
         constructor(elements:string, nodeSelector:string) {
-            this.$elements = $(elements);
+            this.$elements = jQuery(elements);
             this.availableCounts.push(0);
             this.countWordsInTitle();
-            this.createFilterList();
-            this.initFilter(nodeSelector);
+            this.createSortList();
+            this.initSort(nodeSelector);
         }
 
         /*
@@ -32,7 +32,39 @@ module Drupal8filter {
             // Init controls.
             this.$elements.find('#filters a').on('click', (event) => {
                 event.preventDefault();
-                this.$elements.dylay('filter', $(event.currentTarget).data('filter'));
+                this.$elements.dylay('filter', jQuery(event.currentTarget).data('filter'));
+            })
+        }
+
+        private initSort(nodeSelector: string): void {
+            // Init controls.
+            var that = this;
+            this.$elements.find('#sorts a').on('click', (event) => {
+                event.preventDefault();
+
+                var rowList:Array<any> = [];
+                jQuery('div.views-row').each((key, item) => {
+                    rowList.push(jQuery(item)[0]);
+                });
+
+                rowList = rowList.sort((a: any, b: any) => {
+                    if (jQuery(a).find('h2.node__title').text() > jQuery(b).find('h2.node__title').text()) {
+                        return 1;
+                    }
+                    else if (jQuery(a).find('h2.node__title').text() < jQuery(b).find('h2.node__title').text()) {
+                        return -1;
+                    }
+                    return 0;
+                });
+                if (jQuery(event.currentTarget).data('sort') === 'DESC') {
+                    rowList = rowList.reverse();
+                }
+
+                var html: String = '';
+                jQuery(rowList).each((key: any, value: any) => {
+                    html += value.outerHTML;
+                });
+                that.$elements.find('div.view-content').html(html);
             })
         }
 
@@ -43,20 +75,30 @@ module Drupal8filter {
             var filterButtons:any;
 
             // The wrapper element.
-            filterButtons = $('<div id="filters"></div>');
+            filterButtons = jQuery('<div id="filters"></div>');
 
             this.availableCounts.forEach(function (entry) {
                 // The links.
                 // Show all item, if entry is 0.
                 if (entry == 0) {
-                    filterButtons.append($('<a/>').data('filter', '*').text('all'));
+                    filterButtons.append(jQuery('<a/>').data('filter', '*').text('all'));
                 } else {
-                    filterButtons.append($('<a/>').data('filter', '.count-' + entry).text(entry + 'word(s)'));
+                    filterButtons.append(jQuery('<a/>').data('filter', '.count-' + entry).text(entry + 'word(s)'));
                 }
             });
 
             // Prepend all to the $elements.
             this.$elements.prepend(filterButtons);
+        }
+
+        private createSortList():void {
+            var sortButtons:any;
+            sortButtons = jQuery('<div id="sorts"></div>');
+
+            sortButtons.append(jQuery('<a/>').data('sort', 'ASC').text('Ascending'));
+            sortButtons.append(jQuery('<a/>').data('sort', 'DESC').text('Descending'));
+
+            return this.$elements.prepend(sortButtons);
         }
 
         /*
@@ -68,8 +110,8 @@ module Drupal8filter {
 
             this.$elements.find('.views-row').each(function () {
                 // Calculate all items length and add class based on length.
-                wordsLength = $(this).find('.field-node--title').text().split(' ').length;
-                $(this).addClass('count-' + wordsLength);
+                wordsLength = jQuery(this).find('.field-node--title').text().split(' ').length;
+                jQuery(this).addClass('count-' + wordsLength);
 
                 // Save the result if not exist.
                 if (_me.availableCounts.indexOf(wordsLength) == -1) {

@@ -1,8 +1,10 @@
+#sorts,
 #filters {
   position: relative;
   top: -40px;
 }
 
+#sorts a,
 #filters a {
   display: inline-block;
   margin-right: 10px;
