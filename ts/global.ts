@@ -14,8 +14,8 @@ module Drupal8filter {
             this.$elements = jQuery(elements);
             this.availableCounts.push(0);
             this.countWordsInTitle();
-            this.createFilterList();
-            this.initFilter(nodeSelector);
+            this.createSortList();
+            this.initSort(nodeSelector);
         }
 
         /*
@@ -33,6 +33,38 @@ module Drupal8filter {
             this.$elements.find('#filters a').on('click', (event) => {
                 event.preventDefault();
                 this.$elements.dylay('filter', jQuery(event.currentTarget).data('filter'));
+            })
+        }
+
+        private initSort(nodeSelector: string): void {
+            // Init controls.
+            var that = this;
+            this.$elements.find('#sorts a').on('click', (event) => {
+                event.preventDefault();
+
+                var rowList:Array<any> = [];
+                jQuery('div.views-row').each((key, item) => {
+                    rowList.push(jQuery(item)[0]);
+                });
+
+                rowList = rowList.sort((a: any, b: any) => {
+                    if (jQuery(a).find('h2.node__title').text() > jQuery(b).find('h2.node__title').text()) {
+                        return 1;
+                    }
+                    else if (jQuery(a).find('h2.node__title').text() < jQuery(b).find('h2.node__title').text()) {
+                        return -1;
+                    }
+                    return 0;
+                });
+                if (jQuery(event.currentTarget).data('sort') === 'DESC') {
+                    rowList = rowList.reverse();
+                }
+
+                var html: String = '';
+                jQuery(rowList).each((key: any, value: any) => {
+                    html += value.outerHTML;
+                });
+                that.$elements.find('div.view-content').html(html);
             })
         }
 
@@ -57,6 +89,16 @@ module Drupal8filter {
 
             // Prepend all to the $elements.
             this.$elements.prepend(filterButtons);
+        }
+
+        private createSortList():void {
+            var sortButtons:any;
+            sortButtons = jQuery('<div id="sorts"></div>');
+
+            sortButtons.append(jQuery('<a/>').data('sort', 'ASC').text('Ascending'));
+            sortButtons.append(jQuery('<a/>').data('sort', 'DESC').text('Descending'));
+
+            return this.$elements.prepend(sortButtons);
         }
 
         /*
